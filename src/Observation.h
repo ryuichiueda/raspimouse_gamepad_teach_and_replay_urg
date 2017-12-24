@@ -5,23 +5,20 @@
 #include <vector>
 #include <fstream>
 #include "ros/ros.h"
+#include "sensor_msgs/LaserScan.h"
+#include "Hough.h"
 using namespace std;
 
 class Observation{
 public:
 	Observation();
-	Observation(int left_f,int left_s, int right_s, int right_f);
+	Observation(const sensor_msgs::LaserScan::ConstPtr& msg);
+	//void setValues(const raspimouse_gamepad_teach_and_replay_urg::sensor_msgs::LaserScan::ConstPtr& msg);
+	void setValues(const sensor_msgs::LaserScan::ConstPtr& msg);
+	unsigned long int compare(Observation *ref);
 
-	void setValues(int left_f,int left_s, int right_s, int right_f);
-
-	int lf;
-	int ls;
-	int rs;
-	int rf;
-	double log_lf;
-	double log_ls;
-	double log_rs;
-	double log_rf;
+private:
+	Hough hough;
 };
 
 #endif

@@ -102,15 +102,14 @@ Action ParticleFilter::average(Episodes *ep)
 	return a;
 }
 
-Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep, raspimouse_gamepad_teach_and_replay_urg::PFoEOutput *out)
+Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep)//, raspimouse_gamepad_teach_and_replay_urg::PFoEOutput *out)
 {
-	out->eta = 0.0;
+	//out->eta = 0.0;
 	cout << "obs likelihood" << endl;
 	for(auto &p : particles){
 		double h = likelihood(episodes->obsAt(p.pos),obs);
-		//double h = likelihood(episodes->obsAt(p.pos),obs, episodes->actionAt(p.pos), act);
 		p.weight *= h;
-		out->eta += p.weight;
+		//out->eta += p.weight;
 	}
 /*
 	cout << "mode particle" << endl;
@@ -131,9 +130,11 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 	
 	//cout << "OUTPUT " << fw << " " << rot << endl;
 
+	/*
 	for(auto &p : particles){
 		out->particles_pos.push_back(p.pos);
 	}
+	*/
 
 	cout << "mode" << endl;
 	return mode(ep);
@@ -143,37 +144,13 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 double ParticleFilter::likelihood(Observation *past, Observation *last)
 {
-	double diff[4] = {	past->log_lf - last->log_lf,
-				past->log_ls - last->log_ls,
-				past->log_rs - last->log_rs,
-				past->log_rf - last->log_rf };
-	/*
-	double diff[4] = {	past->lf - last->lf,
-				past->ls - last->ls,
-				past->rs - last->rs,
-				past->rf - last->rf };
-	//cout << diff[1] << '\t' << diff[2] << endl;
-	double diff[4] = {
-		(past->lf + past->rf) - (last->lf + last->rf), ((past->lf + past->rf) + (last->lf + last->rf)),
-		(past->ls + past->rs) - (last->ls + last->rs), ((past->ls + past->rs) + (last->ls + last->rs)) };
-				*/
+        unsigned long int s = past->compare(last);
+        ROS_INFO("END %f",(double)s);
 
-	/*
-	double ans = 1.0;
-	double sigma = 300;
-	double coef = 1.0 / (sqrt(2*sigma*sigma));
-	for(double &d : diff){
-		ans *= coef * exp( -(d*d) / (2*sigma*sigma));
-	}
-	*/
-	double ans = 1.0;
-	for(double &d : diff){
-		ans /= (1 + fabs(d));
-	}
-
-	return ans;
+	return 1.0/(1 + s);
 }
 
+/*
 double ParticleFilter::likelihood(Observation *past, Observation *last, Action *past_a, Action *last_a)
 {
 	double diff[4] = {	past->log_lf - last->log_lf,
@@ -190,6 +167,7 @@ double ParticleFilter::likelihood(Observation *past, Observation *last, Action *
 
 	return ans;
 }
+*/
 
 
 void ParticleFilter::resampling(vector<Particle> *ps)

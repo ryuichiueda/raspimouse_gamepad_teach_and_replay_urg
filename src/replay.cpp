@@ -1,6 +1,8 @@
 #include "ros/ros.h"
 #include "Event.h"
 #include "Episodes.h"
+#include "Hough.h"
+#include "Observation.h"
 #include "ParticleFilter.h"
 #include <iostream>
 #include <fstream>
@@ -8,6 +10,7 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 #include <ros/package.h> 
+#include "sensor_msgs/LaserScan.h"
 #include "std_srvs/Trigger.h"
 #include "geometry_msgs/Twist.h"
 #include "raspimouse_ros_2/LightSensorValues.h"
@@ -34,10 +37,9 @@ void buttonCallback(const raspimouse_ros_2::ButtonValues::ConstPtr& msg)
 	on = msg->mid_toggle;
 }
 
-void sensorCallback(const raspimouse_ros_2::LightSensorValues::ConstPtr& msg)
+void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-	sensor_values.setValues(msg->left_forward,msg->left_side,msg->right_side,msg->right_forward);
-	sum_forward = msg->sum_forward;
+	sensor_values.setValues(msg);
 }
 
 void on_shutdown(int sig)
@@ -65,7 +67,7 @@ void readEpisodes(string file)
 	for(auto i : view){
 	        auto s = i.instantiate<raspimouse_gamepad_teach_and_replay_urg::Event>();
 
-		Observation obs(s->left_forward,s->left_side,s->right_side,s->right_forward);
+		Observation obs((sensor_msgs::LaserScan::ConstPtr&)s->scan);
 		Action a = {s->linear_x,s->angular_z};
 		Event e(obs,a,0.0);
 		e.time = i.getTime();
@@ -86,7 +88,7 @@ int main(int argc, char **argv)
 	NodeHandle n;
 	np = &n;
 
-	Subscriber sub = n.subscribe("lightsensors", 1, sensorCallback);
+	Subscriber sub = n.subscribe("scan", 1, sensorCallback);
 	Subscriber sub_b = n.subscribe("buttons", 1, buttonCallback);
 	Publisher cmdvel = n.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 	Publisher pfoe_out = n.advertise<raspimouse_gamepad_teach_and_replay_urg::PFoEOutput>("pfoe_out", 100);
@@ -120,21 +122,23 @@ int main(int argc, char **argv)
 			loop_rate.sleep();
 			continue;
 		}
-		raspimouse_gamepad_teach_and_replay_urg::PFoEOutput out;
+//		raspimouse_gamepad_teach_and_replay_urg::PFoEOutput out;
 
-		act = pf.sensorUpdate(&sensor_values, &act, &ep, &out);
+		act = pf.sensorUpdate(&sensor_values, &act, &ep);//, &out);
 		msg.linear.x = act.linear_x;
-		out.linear_x = act.linear_x;
+//		out.linear_x = act.linear_x;
 		msg.angular.z = act.angular_z;
-		out.angular_z = act.angular_z;
+//		out.angular_z = act.angular_z;
 
+		/*
 		out.left_forward = sensor_values.lf;
 		out.left_side = sensor_values.ls;
 		out.right_forward = sensor_values.rf;
 		out.right_side = sensor_values.rs;
+		*/
 
 		cmdvel.publish(msg);
-		pfoe_out.publish(out);
+		//pfoe_out.publish(out);
 		pf.motionUpdate(&ep);
 
 		spinOnce();

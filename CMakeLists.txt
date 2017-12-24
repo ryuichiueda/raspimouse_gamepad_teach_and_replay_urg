@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  sensor_msgs
   message_generation
 )
 
@@ -75,6 +76,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+  sensor_msgs
 )
 
 ################################################
@@ -128,6 +130,7 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/raspimouse_gamepad_teach_and_replay_urg.cpp
 # )
+add_library(${PROJECT_NAME}_Hough src/Hough.cpp)
 add_library(${PROJECT_NAME}_Observation src/Observation.cpp)
 add_library(${PROJECT_NAME}_Event src/Event.cpp)
 add_library(${PROJECT_NAME}_ParticleFilter src/ParticleFilter.cpp)
@@ -155,7 +158,7 @@ add_executable(${PROJECT_NAME}_replay src/replay.cpp)
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(${PROJECT_NAME}_replay ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
-add_dependencies(${PROJECT_NAME}_ParticleFilter ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
+#add_dependencies(${PROJECT_NAME}_ParticleFilter ${TARGET_NAME} ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -164,6 +167,7 @@ add_dependencies(${PROJECT_NAME}_ParticleFilter ${TARGET_NAME} ${PROJECT_NAME}_g
 target_link_libraries(${PROJECT_NAME}_replay ${catkin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_replay ${PROJECT_NAME}_Observation ${catkin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_replay ${PROJECT_NAME}_Event ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_replay ${PROJECT_NAME}_Hough ${catkin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_replay ${PROJECT_NAME}_Episodes ${catkin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_replay ${PROJECT_NAME}_ParticleFilter ${catkin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_replay ${PROJECT_NAME}_Particle ${catkin_LIBRARIES})

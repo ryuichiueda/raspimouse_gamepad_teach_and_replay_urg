@@ -13,7 +13,7 @@ Event::Event(Observation obs,Action act, int rw)
 
 string Event::str(void)
 {
-//	string id = to_string(episode_id) + '\t' + to_string(event_id);
+	/*
 	string id = to_string(event_id);
 	string a = to_string(action.linear_x) + '\t'
 		+ to_string(action.angular_z);
@@ -25,5 +25,6 @@ string Event::str(void)
 	string t = to_string(time.toSec());
 
 	return id + '\t' + t + '\t' + a + '\t' + s + " 0";
+	*/
 }
 

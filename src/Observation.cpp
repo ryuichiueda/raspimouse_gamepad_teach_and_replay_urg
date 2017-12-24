@@ -1,26 +1,35 @@
 #include "Observation.h"
+#include "sensor_msgs/LaserScan.h"
 #include <iostream>
 #include <string>
 #include <cmath>
+#include "Hough.h"
 
 Observation::Observation()
 {
 }
 
-Observation::Observation(int left_f,int left_s, int right_s, int right_f)
+Observation::Observation(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-	setValues(left_f,left_s,right_s,right_f);
+	setValues(msg);
 }
 
-void Observation::setValues(int left_f,int left_s, int right_s, int right_f)
+void Observation::setValues(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-	lf = left_f > 0 ? left_f : 1;
-	ls = left_s > 0 ? left_s : 1;
-	rs = right_s > 0 ? right_s : 1;
-	rf = right_f > 0 ? right_f : 1;
+        int step = (int)floor( ( msg->angle_max - msg->angle_min ) / msg->angle_increment );
 
-	log_lf = log10((double)lf);
-	log_ls = log10((double)ls);
-	log_rs = log10((double)rs);
-	log_rf = log10((double)rf);
+        for(int i=0;i<step;i+=2){
+                if(std::isnan(msg->ranges[i]))
+                        continue;
+
+                double ang = msg->angle_min + msg->angle_increment*step;
+                double x = msg->ranges[i]*cos(ang)*1000;
+                double y = msg->ranges[i]*sin(ang)*1000;
+                hough.set(x, y);
+        }
+}
+
+unsigned long int Observation::compare(Observation *ref)
+{
+        return hough.compare(&ref->hough);
 }

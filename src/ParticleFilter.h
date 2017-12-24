@@ -19,7 +19,7 @@ public:
 	void print(void);
 
 //	Action sensorUpdate(Observation *obs, Episodes *ep, raspimouse_gamepad_teach_and_replay_urg::PFoEOutput *out);
-	Action sensorUpdate(Observation *obs, Action *act, Episodes *ep, raspimouse_gamepad_teach_and_replay_urg::PFoEOutput *out);
+	Action sensorUpdate(Observation *obs, Action *act, Episodes *ep);//, raspimouse_gamepad_teach_and_replay_urg::PFoEOutput *out);
 	Action mode(Episodes *ep);
 	Action modeParticle(Episodes *ep);
 	Action average(Episodes *ep);
@@ -31,7 +31,6 @@ private:
 	Episodes *episodes;
 
 	double likelihood(Observation *past, Observation *last);
-	double likelihood(Observation *past, Observation *last, Action *past_a, Action *last_a);
 
 	void resampling(vector<Particle> *ps);
 	void normalize(void);

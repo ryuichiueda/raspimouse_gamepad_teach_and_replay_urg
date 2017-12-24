@@ -14,7 +14,6 @@ class JoyTwist(object):
         self._joy_sub = rospy.Subscriber('/joy', Joy, self.joy_callback, queue_size=1)
         self._btn_sub = rospy.Subscriber('/buttons', ButtonValues, self.button_callback, queue_size=1)
         self._twist_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
-#        self._led_pub = rospy.Publisher('/leds', LedValues, queue_size=1)
 
         self.level = 1
 	self.on = False
@@ -26,9 +25,6 @@ class JoyTwist(object):
 
     def button_callback(self, btn_msg):
 	self.on = btn_msg.front_toggle
-#	leds = LedValues()
-#	leds.left_side = self.on
-#	self._led_pub.publish(leds)
 
     def joy_callback(self, joy_msg):
 	if not self.on:
