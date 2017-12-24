@@ -22,12 +22,12 @@ void Observation::setValues(const sensor_msgs::LaserScan::ConstPtr& msg)
         int step = (int)floor( ( msg->angle_max - msg->angle_min ) / msg->angle_increment );
         for(int i=0;i<step;i++){
                 if(std::isnan(msg->ranges[i])){
-			scan.push_back(6.0);
-			log_scan.push_back(log(6.0));
+			scan.push_back(6000.0);
+			log_scan.push_back(log10(6000.0));
+		}else{
+			scan.push_back(msg->ranges[i]*1000);
+			log_scan.push_back(log10(msg->ranges[i]*1000));
 		}
-
-		scan.push_back(msg->ranges[i]);
-		log_scan.push_back(log(msg->ranges[i]));
 	}
 
 	/*
@@ -47,12 +47,12 @@ void Observation::setValues(const sensor_msgs::LaserScan* msg) //XXX I don't kno
         int step = (int)floor( ( msg->angle_max - msg->angle_min ) / msg->angle_increment );
         for(int i=0;i<step;i++){
                 if(std::isnan(msg->ranges[i])){
-			scan.push_back(6.0);
-			log_scan.push_back(log(6.0));
+			scan.push_back(6000.0);
+			log_scan.push_back(log10(6000.0));
+		}else{
+			scan.push_back(msg->ranges[i]*1000);
+			log_scan.push_back(log10(msg->ranges[i]*1000));
 		}
-
-		scan.push_back(msg->ranges[i]);
-		log_scan.push_back(log(msg->ranges[i]));
 	}
 
 	/*
@@ -75,7 +75,8 @@ double Observation::compare(Observation *ref)
 		sum += fabs(log_scan[i] - ref->log_scan[i]);	
 	}
 
-	return sum / step;
+	cout << sum << endl;
+	return sum;
 
        // return hough.compare(&ref->hough);
 }

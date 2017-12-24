@@ -143,8 +143,8 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep)
 
 double ParticleFilter::likelihood(Observation *past, Observation *last)
 {
-        unsigned long int s = past->compare(last);
-	return 1.0/(1 + s);
+        double s = past->compare(last);
+	return 1.0/(1.0 + s);
 }
 
 /*
