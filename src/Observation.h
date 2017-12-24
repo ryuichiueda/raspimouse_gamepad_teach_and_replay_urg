@@ -1,10 +1,6 @@
 #ifndef __OBS_H_ 
 #define __OBS_H_
 
-#include <string>
-#include <vector>
-#include <fstream>
-#include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 #include "Hough.h"
 using namespace std;

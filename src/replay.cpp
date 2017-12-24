@@ -14,7 +14,7 @@
 #include "raspimouse_ros_2/TimedMotion.h"
 #include "raspimouse_ros_2/ButtonValues.h"
 #include "raspimouse_gamepad_teach_and_replay_urg/Event.h"
-//#include "raspimouse_gamepad_teach_and_replay_urg/PFoEOutput.h"
+#include "raspimouse_gamepad_teach_and_replay_urg/PFoEOutput.h"
 using namespace ros;
 
 Episodes ep;

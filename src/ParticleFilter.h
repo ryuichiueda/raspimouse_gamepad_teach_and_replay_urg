@@ -4,8 +4,6 @@
 #include <vector>
 #include "Particle.h"
 #include "ProbDistribution.h"
-#include "raspimouse_gamepad_teach_and_replay_urg/PFoEOutput.h"
-using namespace ros;
 
 class Episodes;
 class Observation;
