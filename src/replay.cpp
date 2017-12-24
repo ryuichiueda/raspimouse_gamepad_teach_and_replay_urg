@@ -18,7 +18,7 @@
 using namespace ros;
 
 Episodes ep;
-ParticleFilter pf(1000,&ep);
+ParticleFilter pf(100,&ep);
 
 Observation sensor_values;
 
