@@ -12,9 +12,33 @@ Observation::Observation(const sensor_msgs::LaserScan::ConstPtr& msg)
 	setValues(msg);
 }
 
+Observation::Observation(const sensor_msgs::LaserScan* msg)
+{
+	setValues(msg);
+}
+
 void Observation::setValues(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
+	cout << "!" << endl;
         int step = (int)floor( ( msg->angle_max - msg->angle_min ) / msg->angle_increment );
+	cout << "!!" << endl;
+
+        for(int i=0;i<step;i+=2){
+                if(std::isnan(msg->ranges[i]))
+                        continue;
+
+                double ang = msg->angle_min + msg->angle_increment*step;
+                double x = msg->ranges[i]*cos(ang)*1000;
+                double y = msg->ranges[i]*sin(ang)*1000;
+                hough.set(x, y);
+        }
+}
+
+void Observation::setValues(const sensor_msgs::LaserScan* msg) //XXX I don't know how to cast!!!
+{
+	cout << "!" << endl;
+        int step = (int)floor( ( msg->angle_max - msg->angle_min ) / msg->angle_increment );
+	cout << "!!" << endl;
 
         for(int i=0;i<step;i+=2){
                 if(std::isnan(msg->ranges[i]))

@@ -49,6 +49,7 @@ void on_shutdown(int sig)
 
 void readEpisodes(string file)
 {
+	file = "/home/ueda/catkin_ws/src/raspimouse_gamepad_teach_and_replay_urg/test/20171224_130640.bag";
 	ep.reset();
 
 	rosbag::Bag bag1(file, rosbag::bagmode::Read);
@@ -61,11 +62,14 @@ void readEpisodes(string file)
 	double start = view.getBeginTime().toSec() + 5.0; //discard first 5 sec
 	double end = view.getEndTime().toSec() - 5.0; //discard last 5 sec
 	for(auto i : view){
-	        auto s = i.instantiate<raspimouse_gamepad_teach_and_replay_urg::Event>();
-
-		Observation obs((sensor_msgs::LaserScan::ConstPtr&)s->scan);
+		cout << "read" << endl;
+		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay_urg::Event>();
+		const sensor_msgs::LaserScan& scan = s->scan;
+		Observation obs(&scan);
+		cout << "?" << endl;
 		Action a = {s->linear_x,s->angular_z};
 		Event e(obs,a,0.0);
+		
 		e.time = i.getTime();
 
 		if(e.time.toSec() < start)
@@ -83,6 +87,7 @@ int main(int argc, char **argv)
 	init(argc,argv,"go_around");
 	NodeHandle n;
 	np = &n;
+	readEpisodes("");
 
 	Subscriber sub = n.subscribe("scan", 1, sensorCallback);
 	Subscriber sub_b = n.subscribe("buttons", 1, buttonCallback);
