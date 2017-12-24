@@ -52,5 +52,5 @@ unsigned long int Hough::compare(Hough *ref)
 			score += diff*diff;
 		}
 	}
-	return score;
+	return sqrt(score/(20*36));
 }
