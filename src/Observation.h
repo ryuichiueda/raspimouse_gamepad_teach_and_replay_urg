@@ -13,9 +13,11 @@ public:
 	//void setValues(const raspimouse_gamepad_teach_and_replay_urg::sensor_msgs::LaserScan::ConstPtr& msg);
 	void setValues(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void setValues(const sensor_msgs::LaserScan* msg);
-	unsigned long int compare(Observation *ref);
+	double compare(Observation *ref);
 
 private:
+	vector<double> scan;
+	vector<double> log_scan;
 	Hough hough;
 };
 
