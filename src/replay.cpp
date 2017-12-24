@@ -49,6 +49,7 @@ void on_shutdown(int sig)
 
 void readEpisodes(string file)
 {
+	file = "/home/ubuntu/.ros/20171224_130640.bag";
 	ep.reset();
 
 	rosbag::Bag bag1(file, rosbag::bagmode::Read);
@@ -61,9 +62,11 @@ void readEpisodes(string file)
 	double start = view.getBeginTime().toSec() + 5.0; //discard first 5 sec
 	double end = view.getEndTime().toSec() - 5.0; //discard last 5 sec
 	for(auto i : view){
+		cout << "read" << endl;
 	        auto s = i.instantiate<raspimouse_gamepad_teach_and_replay_urg::Event>();
 
 		Observation obs((sensor_msgs::LaserScan::ConstPtr&)s->scan);
+		cout << "?" << endl;
 		Action a = {s->linear_x,s->angular_z};
 		Event e(obs,a,0.0);
 		e.time = i.getTime();
