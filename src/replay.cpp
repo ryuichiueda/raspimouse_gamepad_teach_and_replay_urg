@@ -18,7 +18,7 @@
 using namespace ros;
 
 Episodes ep;
-ParticleFilter pf(100,&ep);
+ParticleFilter pf(500,&ep);
 
 Observation sensor_values;
 
@@ -49,7 +49,6 @@ void on_shutdown(int sig)
 
 void readEpisodes(string file)
 {
-	file = "/home/ubuntu/.ros/20171224_130640.bag";
 	ep.reset();
 
 	rosbag::Bag bag1(file, rosbag::bagmode::Read);
@@ -62,13 +61,12 @@ void readEpisodes(string file)
 	double start = view.getBeginTime().toSec() + 5.0; //discard first 5 sec
 	double end = view.getEndTime().toSec() - 5.0; //discard last 5 sec
 	for(auto i : view){
-		cout << "read" << endl;
-	        auto s = i.instantiate<raspimouse_gamepad_teach_and_replay_urg::Event>();
-
-		Observation obs((sensor_msgs::LaserScan::ConstPtr&)s->scan);
-		cout << "?" << endl;
+		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay_urg::Event>();
+		const sensor_msgs::LaserScan& scan = s->scan;
+		Observation obs(&scan);
 		Action a = {s->linear_x,s->angular_z};
 		Event e(obs,a,0.0);
+		
 		e.time = i.getTime();
 
 		if(e.time.toSec() < start)
@@ -123,7 +121,9 @@ int main(int argc, char **argv)
 		}
 //		raspimouse_gamepad_teach_and_replay_urg::PFoEOutput out;
 
+        	ROS_INFO("START");
 		act = pf.sensorUpdate(&sensor_values, &act, &ep);//, &out);
+        	ROS_INFO("END");
 		msg.linear.x = act.linear_x;
 //		out.linear_x = act.linear_x;
 		msg.angular.z = act.angular_z;

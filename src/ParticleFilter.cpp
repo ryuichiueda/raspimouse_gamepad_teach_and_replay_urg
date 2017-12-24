@@ -137,15 +137,13 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep)
 
 	cout << "mode" << endl;
 	return mode(ep);
-//	cout << "avg" << endl;
-//	return average(ep);
+	//cout << "avg" << endl;
+	//return average(ep);
 }
 
 double ParticleFilter::likelihood(Observation *past, Observation *last)
 {
         unsigned long int s = past->compare(last);
-        ROS_INFO("END %f",(double)s);
-
 	return 1.0/(1 + s);
 }
 
