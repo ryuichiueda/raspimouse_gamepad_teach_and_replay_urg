@@ -1,8 +1,6 @@
 #include "ros/ros.h"
 #include "Event.h"
 #include "Episodes.h"
-#include "Hough.h"
-#include "Observation.h"
 #include "ParticleFilter.h"
 #include <iostream>
 #include <fstream>
@@ -13,12 +11,10 @@
 #include "sensor_msgs/LaserScan.h"
 #include "std_srvs/Trigger.h"
 #include "geometry_msgs/Twist.h"
-#include "raspimouse_ros_2/LightSensorValues.h"
 #include "raspimouse_ros_2/TimedMotion.h"
 #include "raspimouse_ros_2/ButtonValues.h"
 #include "raspimouse_gamepad_teach_and_replay_urg/Event.h"
-#include "ParticleFilter.h"
-#include "raspimouse_gamepad_teach_and_replay_urg/PFoEOutput.h"
+//#include "raspimouse_gamepad_teach_and_replay_urg/PFoEOutput.h"
 using namespace ros;
 
 Episodes ep;
