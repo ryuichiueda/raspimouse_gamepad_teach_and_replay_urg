@@ -49,7 +49,6 @@ void on_shutdown(int sig)
 
 void readEpisodes(string file)
 {
-	file = "/home/ueda/catkin_ws/src/raspimouse_gamepad_teach_and_replay_urg/test/20171224_130640.bag";
 	ep.reset();
 
 	rosbag::Bag bag1(file, rosbag::bagmode::Read);
